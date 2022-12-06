@@ -83,14 +83,8 @@ if __name__=="__main__":
     data:dict={
         "Name":["Mike","Aby","Jack","Tom","Jessica","Tony","Thomas","Samantha","Sandy","Ken","Alvin","Alice","Amanda","Joseph"],
         "Age":[36,24,26,29,24,30,29,24,24,28,55,60,59,60],
-        "Years worked in company":[24,1,2,4,0,4,5,6,0,3,35,40,39,42],
         "Gender":["Male","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male"],
-        "Married":[True,False,False,False,False,True,False,True,True,False,True,False,True,True],
-        "Salary":[6400,2400,4800,5000,2400,4800,5000,3000,2400,1200,10000,24000,24000,24000],
         "Working hour":[12,8,8,10,8.5,8,8,8,8,0,6,7.5,7,7],
-        "Sleeping hours per day":[5.4,7,8,6,7,7,7,8,6.5,8,10,10,9,9],
-        "Free hours per day":[0,5,24,0,6,6,9,5,7,24,4,4,5,5],
-        "Number of kids":[5,0,0,3,0,3,0,9,0,0,36,0,27,27],
         "Able to join the company vacation":[False,False,True,False,True,True,False,True,False,False,True,False,True,True]
     }
 
