@@ -1,6 +1,7 @@
 import math
 import pandas as pd
 from sklearn import tree
+from matplotlib import pyplot as plt
 
 def InfoCalc(probability: float) -> float:
     info: float = 0
@@ -59,7 +60,7 @@ class GetInfoDataFrame():
             "Changes":varDict
         }
 
-    def TreeDiagramingDataset(self,outputColmn:str):
+    def TreeDiagramingDataset(self,outputColmn:str,absltFileName:str=None):
         self.featrs:list=self.Colmns
 
         if outputColmn in self.featrs:
@@ -72,3 +73,41 @@ class GetInfoDataFrame():
             self.treeDgrm=self.treeDgrm.fit(self.treeDgrmXVals,self.treeDgrmYVals)
 
             tree.plot_tree(self.treeDgrm,feature_names=self.featrs)
+
+            if absltFileName!=None:
+                plt.savefig(absltFileName)
+
+#Example for how to use:
+if __name__=="__main__":
+    #Create a dictionary that contains data, the data needed is in pandas.DataFrame datatype:
+    data:dict={
+        "Name":["Mike","Aby","Jack","Tom","Jessica","Tony","Thomas","Samantha","Sandy","Ken","Alvin","Alice","Amanda","Joseph"],
+        "Age":[36,24,26,29,24,30,29,24,24,28,55,60,59,60],
+        "Years worked in company":[24,1,2,4,0,4,5,6,0,3,35,40,39,42],
+        "Gender":["Male","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male"],
+        "Married":[True,False,False,False,False,True,False,True,True,False,True,False,True,True],
+        "Salary":[6400,2400,4800,5000,2400,4800,5000,3000,2400,1200,10000,24000,24000,24000],
+        "Working hour":[12,8,8,10,8.5,8,8,8,8,0,6,7.5,7,7],
+        "Sleeping hours per day":[5.4,7,8,6,7,7,7,8,6.5,8,10,10,9,9],
+        "Free hours per day":[0,5,24,0,6,6,9,5,7,24,4,4,5,5],
+        "Number of kids":[5,0,0,3,0,3,0,9,0,0,36,0,27,27],
+        "Able to join the company vacation":[False,False,True,False,True,True,False,True,False,False,True,False,True,True]
+    }
+
+    print("The data is make out by random with no mean to harm anyone:")
+
+    df:pd.DataFrame=pd.DataFrame(data)  #Create a pandas.DataFrame with datas in the dictionary.
+    obj=GetInfoDataFrame(df)    #Create an object of GetInfoDataFrame with df as Dataset.
+    obj.GettingInfoFromDataset()    #Get the columns and variable values for each columns.
+    obj.MappingDataset()    #Convert non-int and non-float variable values into int.
+    obj.TreeDiagramingDataset("Able to join the company vacation",absltFileName="TreeDiagram.png") #Doing calculations(?) and plotting tree diagram.
+
+    print("The dataset:")
+    print(obj.Dataset)
+
+    print("\n\n\nThe variables replaced:")
+    reprs:pd.DataFrame=pd.DataFrame(obj.DataVarStrToNumerc)
+    print(reprs)
+
+    print("The mapped dataset:")
+    print(obj.MappedDataset)
