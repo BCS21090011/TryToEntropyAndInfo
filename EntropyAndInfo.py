@@ -1,5 +1,6 @@
 import math
 import pandas as pd
+from sklearn import tree
 
 def InfoCalc(probability: float) -> float:
     info: float = 0
@@ -57,3 +58,17 @@ class GetInfoDataFrame():
             "Column changes":changesCol,
             "Changes":varDict
         }
+
+    def TreeDiagramingDataset(self,outputColmn:str):
+        self.featrs:list=self.Colmns
+
+        if outputColmn in self.featrs:
+            self.featrs.remove(outputColmn) #Remove the output column from the mapped dataset.
+
+            self.treeDgrmXVals=self.MappedDataset[self.featrs]
+            self.treeDgrmYVals=self.MappedDataset[outputColmn]
+
+            self.treeDgrm=tree.DecisionTreeClassifier()
+            self.treeDgrm=self.treeDgrm.fit(self.treeDgrmXVals,self.treeDgrmYVals)
+
+            tree.plot_tree(self.treeDgrm,feature_names=self.featrs)
