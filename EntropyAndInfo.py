@@ -40,10 +40,19 @@ class GetInfoDataFrame():
             if all(((type(var) is not int) and (type(var) is not float)) for var in self.Variables[i]): #If all variables in the column is neither int nor float:
                 changesCol.append(self.Colmns[i])
                 numVar:list=list(range(len(self.Variables[i]))) #This will create a list with values from 0 until the number of variables of the column.
+
+                #If the type is bool then make sure True is 1 and False is 0:
+                if all((type(var) is bool) for var in self.Variables[i]):
+                    if True in self.Variables[i]:
+                        numVar[self.Variables[i].index(True)]=1
+                    if False in self.Variables[i]:
+                        numVar[self.Variables[i].index(False)]=0
+
                 tmpDict:dict=dict(zip(self.Variables[i],numVar))
                 varDict.append(tmpDict)
                 self.MappedDataset[self.Colmns[i]]=self.MappedDataset[self.Colmns[i]].map(tmpDict)
 
+        #Save all the changes into dictionary:
         self.DataVarStrToNumerc:dict={
             "Column changes":changesCol,
             "Changes":varDict
