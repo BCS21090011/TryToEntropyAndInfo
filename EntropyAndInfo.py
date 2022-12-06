@@ -61,7 +61,7 @@ class GetInfoDataFrame():
         }
 
     def TreeDiagramingDataset(self,outputColmn:str,absltFileName:str=None):
-        self.featrs:list=self.Colmns
+        self.featrs:list=self.Colmns.copy()
 
         if outputColmn in self.featrs:
             self.featrs.remove(outputColmn) #Remove the output column from the mapped dataset.
