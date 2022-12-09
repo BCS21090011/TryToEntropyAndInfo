@@ -1,11 +1,42 @@
-import math
+'''
+TreeDiagramer.py is a Python script that creates a decision tree diagram for a given dataset. The script uses the pandas
+library to store and manipulate the data, and the scikit-learn and matplotlib libraries to create and plot the decision
+tree.
 
-import numpy
+The script starts by defining two helper functions: InfoCalc and EntropyCalc. These functions are used to calculate the
+information and entropy of a given set of probabilities, respectively. The information and entropy are used in the
+decision tree algorithm to determine the best way to split the data into different branches of the tree.
+
+Next, the script defines the TreeDiagramer class. This class contains several methods that are used to process the
+dataset, create the decision tree, and save the diagram to a file. The init method is the constructor for the class, and
+it is called when a new TreeDiagramer object is created. This method takes the dataset, an optional output column, and
+an optional file name as arguments.
+
+The GettingInfoFromDataset method is used to extract information about the columns and variables in the dataset. The
+MappingDataset method is used to convert any non-numeric columns in the dataset to numeric values. This is necessary
+because the decision tree algorithm can only work with numeric data.
+
+The TreeDiagramingDataset method is used to create the actual decision tree. This method takes the output column and an
+optional file name as arguments. It uses the scikit-learn library to train a decision tree model on the dataset, and
+then uses the matplotlib library to plot the tree. If a file name is provided, the method will also save the plot to a
+file.
+
+The Predict method is used to make predictions using the trained decision tree model. This method takes a dictionary of
+data as an argument and returns the predicted class for that data.
+
+Overall, the TreeDiagramer class provides a way to create a visual representation of a decision tree model for a given
+dataset. This can be useful for understanding how the algorithm works and for debugging any issues with the model.
+
+By: ChatGPT
+Date: 2022/12/09 18:51
+'''
+
+import math
 import pandas as pd
 from sklearn import tree
 from matplotlib import pyplot as plt
 
-def InfoCalc(probability: float) -> float:
+def InfoCalc(probability: float) -> float:  #Just create in case needed.
     info: float = 0
 
     if probability > 0:
@@ -13,7 +44,7 @@ def InfoCalc(probability: float) -> float:
 
     return info
 
-def EntropyCalc(probabilities: list) -> float:
+def EntropyCalc(probabilities: list) -> float:  #Just create in case needed.
     entro: float = 0
 
     for prob in probabilities:
@@ -145,7 +176,7 @@ if __name__=="__main__":
                 userInput[0].append(IO.ReadFloat(qstStr="Input: "))
 
         predctOutput:int=int(obj.Predict(inputs=userInput))
-        predctOutputVar=obj.OriginalValues(clmn="Able to join the company vacation",val=predctOutput)   #Finde the original variable of the replaced value.
+        predctOutputVar=obj.OriginalValues(clmn="Able to join the company vacation",val=predctOutput)   #Find the original variable of the replaced value.
         print(f"The prediction output is: {predctOutputVar}")
 
         retryPredict=IO.YNDecision(decisionStr="Try to predict again? (Y/N)\n")
