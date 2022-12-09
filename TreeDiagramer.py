@@ -118,11 +118,13 @@ class TreeDiagramer():
     def Predict(self,inputs:list):  #This method can be used to make predictions using the decision tree.
         return self.treeDgrm.predict(inputs)
 
-    def ReplacedValues(self,clmn:str,var:str)->int:
-        if clmn in obj.DataVarStrToNumerc["Column changes"]:  #Check if the column is replaced.
-            indeces: int = obj.DataVarStrToNumerc["Column changes"].index(clmn) #Find the index of column in DataVarStrToNumerc.
-            index:int= obj.DataVarStrToNumerc["Changes"][indeces][var]  #Find the values represent the variable.
-            return index
+    def ReplacedValues(self,clmn:str)->list:    #This will return all the variables in the given column in list. The variable is sorted so that the index is the value represent the variable.
+        varList:list=[]
+
+        for i in range(len(obj.Variables[obj.featrs.index(clmn)])):
+            varList.append(self.OriginalValues(clmn=clmn,val=i))
+
+        return varList
 
     def OriginalValues(self,clmn:str,val:int):
         if clmn in obj.DataVarStrToNumerc["Column changes"]:  # Check if the column is replaced.
@@ -130,18 +132,44 @@ class TreeDiagramer():
             var=next(k for k,v in obj.DataVarStrToNumerc["Changes"][indeces].items() if v==val) #Use the next() function to find the key with the given value
             return var
 
+        '''
+        next() is a built-in function in Python that retrieves the next item from an iterator. In Python, an iterator is
+        an object that can be iterated (looped) upon. An iterator has a next() method that is used to retrieve the next
+        item from the iterator. The next() method returns the next item of the iterator.
+        
+        In this code, next() is used in conjunction with a generator expression to retrieve the first item from the
+        generator that satisfies a certain condition.
+
+        A generator expression is a concise way to create a generator object. It is similar to a list comprehension, but
+        instead of square brackets, it is enclosed in parentheses. Like a list comprehension, it can be used to iterate
+        over the elements of an iterator, but it only generates one item at a time, making it more memory efficient.
+        
+        In this code, I uses a generator expression to iterate over the items in
+        obj.DataVarStrToNumerc["Changes"][indeces], which is a dictionary.
+        The generator expression k for k,v in obj.DataVarStrToNumerc["Changes"][indeces].items() if v==val returns the
+        keys from the dictionary whose values are equal to val. next() is then called on this generator to retrieve the
+        first key that satisfies this condition.
+        
+        
+        By: ChatGPT
+        Date: 2022/12/09 21:21
+        Modified by: Me
+        '''
+
 #Example for how to use:
 if __name__=="__main__":
     #Create a dictionary that contains data, the data needed is in pandas.DataFrame datatype:
-    data:dict={
-        "Age":[36,24,26,29,24,30,29,24,24,28,55,60,59,60],
-        "Years worked":[12,0,1,2,1,4,21,20,2,5,35,40,39,37],
-        "Gender":["Male","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male"],
-        "Working hour":[12,8,8,10,8.5,8,8,8,8,0,6,7.5,7,7],
-        "Able to join the company vacation": ["No","No","Yes","No","Yes","No","Yes","Yes","No","No","Yes","No","Yes","Yes"]
+    data: dict = {
+        "Age": [44, 25, 27, 32, 23, 34, 33, 26, 22, 27, 45, 63, 58, 65],
+        "Years worked": [10, 1, 2, 3, 0, 3, 23, 21, 3, 6, 33, 43, 41, 39],
+        "Gender": ["Male","Female","Other","Male","Female","Other","Male","Female","Other","Male","Male","Female","Other","Male"],
+        "Working hour": [10, 9, 9, 11, 9.5, 9, 9, 9, 9, 1, 7, 8.5, 8, 8],
+        "Able to join the company vacation": ["No","Yes","No","Yes","No","Yes","No","Yes","No","Yes","Yes","No","Yes","No"]
     }
 
-    print("The data is make out by random with no mean to harm anyone:")
+    print("Special thanks to ChatGPT for helping me throughout the process. Thank you very much.")
+    print("The data is make out by random with no mean to harm anyone")
+    print("The values in this data is provided by ChatGPT:")
 
     df:pd.DataFrame=pd.DataFrame(data)  #Create a pandas.DataFrame with datas in the dictionary.
     obj=TreeDiagramer(df,outputColmn="Able to join the company vacation",saveFigFileName="TreeDiagram.png")    #Create an object of GetInfoDataFrame with df as Dataset.
@@ -168,15 +196,15 @@ if __name__=="__main__":
         for clmn in obj.featrs: #For every column in features.
             print(f"Column: [{clmn:^16}]:")
             if clmn in obj.DataVarStrToNumerc["Column changes"]:    #Check if the column is replaced.
-                for var in obj.Variables[obj.featrs.index(clmn)]:   #For every variable of the column.
-                    index:int=obj.ReplacedValues(clmn=clmn,var=var) #Find the replaced value of the variable.
-                    print(f"Index: [{index:>3}]:[{var:^16}]")
-                userInput[0].append(IO.ReadInt(qstStr="Input the index: ",inMin=0,inMax=len(obj.Variables[obj.featrs.index(clmn)])))
+                varList:list=obj.ReplacedValues(clmn=clmn)  #Get the variables in the list.
+                for i in range(len(varList)):   #Loop to display all the variables with it's index.
+                    print(f"Index: [{i:>3}]:[{varList[i]:^16}]")
+                userInput[0].append(IO.ReadInt(qstStr="Input the index: ",inMin=0,inMax=len(varList)))
             else:
                 userInput[0].append(IO.ReadFloat(qstStr="Input: "))
 
         predctOutput:int=int(obj.Predict(inputs=userInput))
         predctOutputVar=obj.OriginalValues(clmn="Able to join the company vacation",val=predctOutput)   #Find the original variable of the replaced value.
-        print(f"The prediction output is: {predctOutputVar}")
+        print(f"The prediction output is: {predctOutput} ({predctOutputVar})")
 
         retryPredict=IO.YNDecision(decisionStr="Try to predict again? (Y/N)\n")
