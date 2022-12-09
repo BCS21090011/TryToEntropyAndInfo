@@ -1,3 +1,32 @@
+'''IOIwrote.py is a Python script that contains several functions for reading and validating user input. The script
+defines four functions: ReadInt, ReadFloat, ReadStr, and YNDecision.
+
+The ReadInt function is used to read an integer from the user. The function takes an optional prompt string and optional
+minimum and maximum values as arguments. If the user enters a value that is not an integer or is outside the specified
+range, the function will display an error message and prompt the user to try again.
+
+The ReadFloat function is similar to the ReadInt function, but it is used to read a floating-point number from the user.
+The function takes the same arguments as ReadInt and has the same validation and error-handling behavior.
+
+The ReadStr function is used to read a string from the user. The function takes an optional prompt string and a list of
+valid strings as arguments. If the user enters a string that is not in the list of valid strings, the function will
+display an error message and prompt the user to try again.
+
+The YNDecision function is used to ask the user to make a yes/no decision. The function takes an optional prompt string
+as an argument and returns a boolean value indicating whether the user chose "yes" or "no".
+
+The if __name__ == "__main__" block at the end of the script contains an example of how to use these functions. It
+repeatedly prompts the user to enter an integer and a floating-point number, and then asks the user if they want to exit
+the program. If the user chooses "no", the loop will continue and the user will be prompted to enter new values. If the
+user chooses "yes", the loop will exit and the program will end.
+
+Overall, the functions in IOIwrote.py provide a convenient way to read and validate user input in a Python program. They
+can be useful for ensuring that the user enters valid data and for handling errors gracefully.
+
+By: ChatGPT
+Date: 2022/12/09 18:59
+'''
+
 def ReadInt(qstStr:str="",inMin:int=None,inMax:int=None)->int:
     valid:bool=False
     userInput:int
