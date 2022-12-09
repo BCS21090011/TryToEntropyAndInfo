@@ -87,6 +87,18 @@ class TreeDiagramer():
     def Predict(self,inputs:list):  #This method can be used to make predictions using the decision tree.
         return self.treeDgrm.predict(inputs)
 
+    def ReplacedValues(self,clmn:str,var:str)->int:
+        if clmn in obj.DataVarStrToNumerc["Column changes"]:  #Check if the column is replaced.
+            indeces: int = obj.DataVarStrToNumerc["Column changes"].index(clmn) #Find the index of column in DataVarStrToNumerc.
+            index:int= obj.DataVarStrToNumerc["Changes"][indeces][var]  #Find the values represent the variable.
+            return index
+
+    def OriginalValues(self,clmn:str,val:int):
+        if clmn in obj.DataVarStrToNumerc["Column changes"]:  # Check if the column is replaced.
+            indeces: int = obj.DataVarStrToNumerc["Column changes"].index(clmn)
+            var=next(k for k,v in obj.DataVarStrToNumerc["Changes"][indeces].items() if v==val) #Use the next() function to find the key with the given value
+            return var
+
 #Example for how to use:
 if __name__=="__main__":
     #Create a dictionary that contains data, the data needed is in pandas.DataFrame datatype:
@@ -95,7 +107,7 @@ if __name__=="__main__":
         "Years worked":[12,0,1,2,1,4,21,20,2,5,35,40,39,37],
         "Gender":["Male","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male"],
         "Working hour":[12,8,8,10,8.5,8,8,8,8,0,6,7.5,7,7],
-        "Able to join the company vacation":[False,False,True,False,True,True,False,True,False,False,True,False,True,True]
+        "Able to join the company vacation": ["No","No","Yes","No","Yes","No","Yes","Yes","No","No","Yes","No","Yes","Yes"]
     }
 
     print("The data is make out by random with no mean to harm anyone:")
@@ -113,6 +125,27 @@ if __name__=="__main__":
     print("The mapped dataset:")
     print(obj.MappedDataset)
 
-    predct:numpy.ndarray=obj.Predict(inputs=[[26,2,1,8]])
+    #Make predictions:
+    import IOIwrote as IO
+    retryPredict:bool=True
 
-    print(f"The prediction is: {int(predct)}")
+    print("Making predictions:")
+
+    while retryPredict==True:   #If user choose to retry.
+        userInput:list=[[]]
+
+        for clmn in obj.featrs: #For every column in features.
+            print(f"Column: [{clmn:^16}]:")
+            if clmn in obj.DataVarStrToNumerc["Column changes"]:    #Check if the column is replaced.
+                for var in obj.Variables[obj.featrs.index(clmn)]:   #For every variable of the column.
+                    index:int=obj.ReplacedValues(clmn=clmn,var=var) #Find the replaced value of the variable.
+                    print(f"Index: [{index:>3}]:[{var:^16}]")
+                userInput[0].append(IO.ReadInt(qstStr="Input the index: ",inMin=0,inMax=len(obj.Variables[obj.featrs.index(clmn)])))
+            else:
+                userInput[0].append(IO.ReadFloat(qstStr="Input: "))
+
+        predctOutput:int=int(obj.Predict(inputs=userInput))
+        predctOutputVar=obj.OriginalValues(clmn="Able to join the company vacation",val=predctOutput)   #Finde the original variable of the replaced value.
+        print(f"The prediction output is: {predctOutputVar}")
+
+        retryPredict=IO.YNDecision(decisionStr="Try to predict again? (Y/N)\n")
