@@ -1,4 +1,6 @@
 import math
+
+import numpy
 import pandas as pd
 from sklearn import tree
 from matplotlib import pyplot as plt
@@ -19,9 +21,14 @@ def EntropyCalc(probabilities: list) -> float:
 
     return entro
 
-class GetInfoDataFrame():
-    def __init__(self,datas:pd.DataFrame):  #Put in the dataset.
+class TreeDiagramer():
+    def __init__(self,datas:pd.DataFrame,outputColmn:str=None,saveFigFileName:str=None):  #Put in the dataset.
         self.Dataset=datas
+        self.GettingInfoFromDataset()
+        self.MappingDataset()
+
+        if outputColmn!=None:
+            self.TreeDiagramingDataset(outputColmn=outputColmn,absltFileName=saveFigFileName)
 
     def GettingInfoFromDataset(self):
         self.Colmns: list = self.Dataset.columns.tolist()   #Get the columns.
@@ -70,19 +77,22 @@ class GetInfoDataFrame():
             self.treeDgrmYVals=self.MappedDataset[outputColmn]
 
             self.treeDgrm=tree.DecisionTreeClassifier()
-            self.treeDgrm=self.treeDgrm.fit(self.treeDgrmXVals,self.treeDgrmYVals)
+            self.treeDgrm=self.treeDgrm.fit(self.treeDgrmXVals.values,self.treeDgrmYVals.values)    #Fit only the values.
 
             tree.plot_tree(self.treeDgrm,feature_names=self.featrs)
 
             if absltFileName!=None:
                 plt.savefig(absltFileName)
 
+    def Predict(self,inputs:list):  #This method can be used to make predictions using the decision tree.
+        return self.treeDgrm.predict(inputs)
+
 #Example for how to use:
 if __name__=="__main__":
     #Create a dictionary that contains data, the data needed is in pandas.DataFrame datatype:
     data:dict={
-        "Name":["Mike","Aby","Jack","Tom","Jessica","Tony","Thomas","Samantha","Sandy","Ken","Alvin","Alice","Amanda","Joseph"],
         "Age":[36,24,26,29,24,30,29,24,24,28,55,60,59,60],
+        "Years worked":[12,0,1,2,1,4,21,20,2,5,35,40,39,37],
         "Gender":["Male","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male"],
         "Working hour":[12,8,8,10,8.5,8,8,8,8,0,6,7.5,7,7],
         "Able to join the company vacation":[False,False,True,False,True,True,False,True,False,False,True,False,True,True]
@@ -91,10 +101,7 @@ if __name__=="__main__":
     print("The data is make out by random with no mean to harm anyone:")
 
     df:pd.DataFrame=pd.DataFrame(data)  #Create a pandas.DataFrame with datas in the dictionary.
-    obj=GetInfoDataFrame(df)    #Create an object of GetInfoDataFrame with df as Dataset.
-    obj.GettingInfoFromDataset()    #Get the columns and variable values for each columns.
-    obj.MappingDataset()    #Convert non-int and non-float variable values into int.
-    obj.TreeDiagramingDataset("Able to join the company vacation",absltFileName="TreeDiagram.png") #Doing calculations(?) and plotting tree diagram.
+    obj=TreeDiagramer(df,outputColmn="Able to join the company vacation",saveFigFileName="TreeDiagram.png")    #Create an object of GetInfoDataFrame with df as Dataset.
 
     print("The dataset:")
     print(obj.Dataset)
@@ -105,3 +112,7 @@ if __name__=="__main__":
 
     print("The mapped dataset:")
     print(obj.MappedDataset)
+
+    predct:numpy.ndarray=obj.Predict(inputs=[[26,2,1,8]])
+
+    print(f"The prediction is: {int(predct)}")
